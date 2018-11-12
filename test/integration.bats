@@ -2,7 +2,7 @@
 
 setup() {
   if [ "$CI" == true ]; then
-    VERSION=$CIRCLE_SHA1
+    VERSION=$TRAVIS_COMMIT
   else
     VERSION=$(cat $PWD/VERSION)
   fi
