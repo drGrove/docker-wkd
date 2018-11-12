@@ -1,11 +1,17 @@
-FROM vladgh/gpg:latest
+FROM alpine:3.8
+
+WORKDIR /root/
 
 RUN apk add python3-dev gpgme git py3-setuptools gcc linux-headers musl-dev
-
+RUN pip3 install --upgrade pip
 RUN pip3 install python-gnupg
+RUN git clone --depth 1 --branch v1.0\
+  https://gitlab.com/drGrove/generate-openpgpkey-hu-3 &&\
+  cd generate-openpgpkey-hu-3 &&\
+  pip3 install -r requirements.txt
+RUN mv generate-openpgpkey-hu-3/generate-openpgpkey-hu-3 $HOME/generate-hu
 
-RUN wget https://gitlab.com/Martin_/generate-openpgpkey-hu-3/raw/master/generate-openpgpkey-hu-3 && \
-  chmod +x generate-openpgpkey-hu-3
--3
-ENTRYPOINT ["./generate-openpgpkey-hu"]
-CMD ["--help"]
+ADD generate-keyring .
+
+ENTRYPOINT ["./generate-keyring"]
+CMD [""]

@@ -1,0 +1,17 @@
+#!/bin/sh
+
+DATA_FILE_PATH=${DATA_FILE_PATH:=/data/keys.txt}
+HU_FOLDER=${HU_FOLDER:=hu}
+
+if [ -z "$MAIL_DOMAIN" ] && [ -z "$@" ]; then
+  echo 'You must provide a $MAIL_DOMAIN'
+  exit 1
+fi
+
+echo 'Adding missing keys to keyring...'
+gpg --recv-keys $(cat $DATA_FILE_PATH | awk '{ print $1 }' | xargs)
+
+echo 'Updating Key Directory...'
+./generate-hu \
+  -e \
+  -m $MAIL_DOMAIN

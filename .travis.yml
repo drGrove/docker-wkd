@@ -1,0 +1,11 @@
+sudo: required
+services:
+  - docker
+
+addons:
+  apt:
+    packages:
+      - bats
+
+script:
+  - bats test
