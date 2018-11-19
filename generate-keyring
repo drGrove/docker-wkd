@@ -1,15 +1,108 @@
-#!/bin/sh
+#!/bin/bash
 
 DATA_FILE_PATH=${DATA_FILE_PATH:=/data/keys.txt}
 HU_FOLDER=${HU_FOLDER:=hu}
+MAIL_DOMAIN=${MAIL_DOMAIN:=""}
+USE_FOLDER=${USE_FOLDER:=false}
+USE_FILE=${USE_FILE:=true}
+FOLDER_DIR=${FOLDER_DIR:=/data/}
+SKIP_UPDATE_KEYRING=${SKIP_UPDATE_KEYRING:=false}
+use_folder_flag=false
+use_file_flag=false
 
-if [ -z "$MAIL_DOMAIN" ] && [ -z "$@" ]; then
-  echo 'You must provide a $MAIL_DOMAIN'
+PARAMS=""
+
+usage="$(basename "$0") [-h|--help] [-m|--mail-domain] [--use-folder path |--use-file path] -- generate a trusted keychan and the associated HU files for WKD
+
+where:
+  -h --help - Show this help menu
+  -m --mail-domain text - The domain to generate the HU files for
+  -s --skip-update-keyring - Skip updating the keyring
+  [--use-folder|--folder] path - The folder that contians users public keys for seeding the trust database
+  [--use-file|--file] path (Default: /data/keys.txt) - A file that contains the fingerprints separated by new lines of users public keys to pull from the default keyserver to see the trust database
+
+By default --use-file is used with the default path
+"
+
+update_keyring () {
+  echo 'Adding missing keys to keyring...'
+  if [ "$USE_FILE" = true ]; then
+    gpg --recv-keys $(cat $DATA_FILE_PATH | awk '{ print $1 }' | xargs)
+  fi
+
+  if [ "$USE_FOLDER" = true ]; then
+    _CUR=$PWD
+    if [ -d "$FOLDER_DIR" ]; then
+      cd $FOLDER_DIR
+      local files="$(ls *.asc)"
+      for filename in $files; do
+        echo $filename
+        if [ -f $filename ]; then
+          echo "Importing: $filename"
+          gpg --import $filename
+        fi
+      done
+    else
+      echo "Folder does not exist"
+      exit 1
+    fi
+  fi
+}
+
+while [ "$#" -gt 0 ]; do
+  case "$1" in
+    -h|--help)
+      echo "$usage"
+      exit 0
+      ;;
+    -m|--mail-domain)
+      MAIL_DOMAIN=$2
+      shift 2
+      ;;
+    --use-folder|--folder)
+      USE_FOLDER=true
+      USE_FILE=false
+      FOLDER_DIR=$2
+      use_folder_flag=true
+      shift 2
+      ;;
+    --use-file|--file)
+      USE_FILE=true
+      USE_FOLDER=false
+      DATA_FILE_PATH=$2
+      use_file_flag=true
+      shift 2
+      ;;
+    -s|--skip-update-keyring)
+      SKIP_UPDATE_KEYRING=true
+      shift
+      ;;
+    -*|--*) # unsupported flags
+      echo "Error: Unsupported flag $1" >&2
+      exit 1
+      ;;
+    *) # preserve positional arguments
+      echo "$1"
+      PARAMS="$PARAMS $1"
+      shift
+      ;;
+  esac
+done
+
+if [ "$use_file_flag" = true ] && [ "$use_folder_flag" = true ]; then
+  echo "You may only seed with either a file or a folder. Please select 1 of these options and try again" >&2
+
   exit 1
 fi
 
-echo 'Adding missing keys to keyring...'
-gpg --recv-keys $(cat $DATA_FILE_PATH | awk '{ print $1 }' | xargs)
+if [ -z "$MAIL_DOMAIN" ]; then
+  echo "You must provide a mail domain using -m text or --mail-domain text" >&2
+  exit 1
+fi
+
+if [ "$SKIP_UPDATE_KEYRING" = false ]; then
+  update_keyring
+fi
 
 echo 'Updating Key Directory...'
 ./generate-hu \
