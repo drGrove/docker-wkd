@@ -6,20 +6,21 @@ setup() {
   else
     VERSION=$(cat $PWD/VERSION)
   fi
-  rm -r $PWD/test/hu/*
+}
+
+teardown() {
+  [ -d "$PWD/test/hu" ] && sudo rm -rf $PWD/test/hu/*
 }
 
 @test "hu folder generates with expected file using keys file" {
   run docker run -v $PWD/test/data/file:/data/ -v $PWD/test/hu:/root/hu/ drgrove/wkd:$VERSION -m drgrovellc.com
-  [ "$status" -eq 0]
-  echo "$output"
+  [ "$status" -eq 0 ]
   [ -f "$PWD/test/hu/57f91moszq5u15no4a59pp7pujgeaj4c" ]
 }
 
 @test "hu folder generates with expected file using keys folder" {
   run docker run -v $PWD/test/data/folder:/data/ -v $PWD/test/hu:/root/hu/ drgrove/wkd:$VERSION --use-folder /data/ -m drgrovellc.com
-  [ "$status" -eq 0]
-  echo "$output"
+  [ "$status" -eq 0 ]
   [ -f "$PWD/test/hu/57f91moszq5u15no4a59pp7pujgeaj4c" ]
 }
 

@@ -34,7 +34,7 @@ update_keyring () {
     _CUR=$PWD
     if [ -d "$FOLDER_DIR" ]; then
       cd $FOLDER_DIR
-      local files="$(ls *.asc)"
+      local files="$(find -regex ".*\.\(asc\|key\|gpg\|pgp\)")"
       for filename in $files; do
         echo $filename
         if [ -f $filename ]; then
@@ -42,6 +42,7 @@ update_keyring () {
           gpg --import $filename
         fi
       done
+      cd $_CUR
     else
       echo "Folder does not exist"
       exit 1
