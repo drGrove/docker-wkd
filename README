@@ -5,6 +5,7 @@ A GNUPG WKD (Web Key Directory) generating docker image.
 ## Usage
 
 | ENV VAR        | Required | Description |
+|----------------|----------|-------------|
 | MAIL_DOMAIN    | *        | The domain you'd like to generate key files for. (ex. drgrovellc.com) |
 | DATA_FILE_PATH |          | The path to the datafile |
 | HU_FOLDER      |          | The folder you'd like to generate the wkd in |
