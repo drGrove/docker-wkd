@@ -9,7 +9,7 @@ setup() {
 }
 
 teardown() {
-  [ -d "$PWD/test/hu" ] && sudo rm -rf $PWD/test/hu/*
+  [ -d "$PWD/test/hu" ] && echo "Removing test output folder, this requires sudo" && sudo rm -rf $PWD/test/hu/*
 }
 
 @test "hu folder generates with expected file using keys file" {
