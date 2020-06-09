@@ -19,9 +19,7 @@ spec:
           image: "drgrove/wkd:v1.3.0"
           env:
             - name: HU_FOLDER
-              value: /data/hu
-            - name: DATA_FILE_PATH
-              value: /data/keys/
+              value: /data/hu/
           volumeMounts:
             - name: keys
               mountPath: /data/keys/
@@ -40,7 +38,7 @@ spec:
               protocol: TCP
           volumeMounts:
             - name: wkd
-              mountPath: "/usr/share/nginx/html/.well-known/openpgp/hu/"
+              mountPath: /usr/share/nginx/html/.well-known/openpgpkey/hu/
       volumes:
       - name: wkd
         emptyDir: {}
