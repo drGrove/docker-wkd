@@ -108,4 +108,5 @@ fi
 echo 'Updating Key Directory...'
 ./generate-hu \
   -e \
-  -m $MAIL_DOMAIN
+  -m $MAIL_DOMAIN \
+  -o $HU_FOLDER
