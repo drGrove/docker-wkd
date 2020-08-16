@@ -39,9 +39,14 @@ spec:
           volumeMounts:
             - name: wkd
               mountPath: /usr/share/nginx/html/.well-known/openpgpkey/hu/
+            - name: nginx
+              mountPath: /etc/nginx/conf.d/
       volumes:
       - name: wkd
         emptyDir: {}
       - name: keys
         configMap:
           name: keys
+      - name: nginx
+        configMap:
+          name: nginx

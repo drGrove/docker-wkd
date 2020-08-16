@@ -4,6 +4,7 @@ namespace: wkd
 resources:
   - deployment.yaml
   - service.yaml
+  - nginx.cm.yaml
 configMapGenerator:
   - name: keys
     files: []
