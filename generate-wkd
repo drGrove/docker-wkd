@@ -1,12 +1,13 @@
 #!/bin/bash
 
 DATA_FILE_PATH=${DATA_FILE_PATH:=/data/keys.txt}
-HU_FOLDER=${HU_FOLDER:=hu}
+OUTPUT_FOLDER=${OUTPUT_FOLDER:=output}
 MAIL_DOMAIN=${MAIL_DOMAIN:=""}
 USE_FOLDER=${USE_FOLDER:=false}
 USE_FILE=${USE_FILE:=true}
 FOLDER_DIR=${FOLDER_DIR:=/data/}
 SKIP_UPDATE_KEYRING=${SKIP_UPDATE_KEYRING:=false}
+KEYRING_FILE=${KEYRING_FILE:=/tmp/keyring}
 use_folder_flag=false
 use_file_flag=false
 
@@ -27,7 +28,7 @@ By default --use-file is used with the default path
 update_keyring () {
   echo 'Adding missing keys to keyring...'
   if [ "$USE_FILE" = true ]; then
-    gpg --recv-keys $(cat $DATA_FILE_PATH | awk '{ print $1 }' | xargs)
+    gpg --keyserver keyserver.ubuntu.com --recv-keys $(cat $DATA_FILE_PATH | awk '{ print $1 }' | xargs)
   fi
 
   if [ "$USE_FOLDER" = true ]; then
@@ -48,6 +49,7 @@ update_keyring () {
       exit 1
     fi
   fi
+  gpg --export "${MAIL_DOMAIN}" > "${KEYRING_FILE}"
 }
 
 while [ "$#" -gt 0 ]; do
@@ -101,12 +103,18 @@ if [ -z "$MAIL_DOMAIN" ]; then
   exit 1
 fi
 
+if [ ! -f "" ]; then
+  touch "${KEYRING_FILE}"
+fi
+
 if [ "$SKIP_UPDATE_KEYRING" = false ]; then
   update_keyring
 fi
 
 echo 'Updating Key Directory...'
-./generate-hu \
-  -e \
-  -m $MAIL_DOMAIN \
-  -o $HU_FOLDER
+sq \
+  wkd \
+  generate \
+  "${OUTPUT_FOLDER}" \
+  "${MAIL_DOMAIN}" \
+  "/tmp/keyring"

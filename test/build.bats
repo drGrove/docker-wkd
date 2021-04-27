@@ -1,11 +1,7 @@
 #!/usr/bin/env bats
 
 setup() {
-  if [ "$CI" == true ]; then
-    VERSION=$TRAVIS_COMMIT
-  else
-    VERSION=$(cat $PWD/VERSION)
-  fi
+  VERSION=$(git describe --tags)
 }
 
 @test "Docker image builds" {

@@ -1,5 +1,5 @@
 DOCKER_REGISTRY ?= drgrove
-VERSION ?= latest
+VERSION ?= $(shell git describe --tags)
 
 .PHONY: image
 image:
