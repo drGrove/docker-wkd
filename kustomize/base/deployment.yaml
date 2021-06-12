@@ -16,15 +16,15 @@ spec:
     spec:
       initContainers:
         - name: generator
-          image: "drgrove/wkd:v1.3.0"
+          image: "drgrove/wkd:v2.0.0"
           env:
-            - name: HU_FOLDER
-              value: /data/hu/
+            - name: OUTPUT_FOLDER
+              value: /data/output/
           volumeMounts:
             - name: keys
               mountPath: /data/keys/
             - name: wkd
-              mountPath: /data/hu/
+              mountPath: /data/output/
           args:
             - "--use-folder"
             - "/data/keys/"
@@ -38,7 +38,7 @@ spec:
               protocol: TCP
           volumeMounts:
             - name: wkd
-              mountPath: /usr/share/nginx/html/.well-known/openpgpkey/hu/
+              mountPath: /usr/share/nginx/html/
             - name: nginx
               mountPath: /etc/nginx/conf.d/
       volumes:

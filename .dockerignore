@@ -3,4 +3,5 @@ README
 VERSION
 Dockerfile
 test/*
+kustomize/*
 .travis.yml
