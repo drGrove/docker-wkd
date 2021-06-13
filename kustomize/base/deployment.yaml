@@ -16,7 +16,7 @@ spec:
     spec:
       initContainers:
         - name: generator
-          image: "drgrove/wkd:v2.0.0"
+          image: "drgrove/wkd:latest"
           env:
             - name: OUTPUT_FOLDER
               value: /data/output/
@@ -30,7 +30,7 @@ spec:
             - "/data/keys/"
       containers:
         - name: nginx
-          image: "nginx:1.19.0"
+          image: "nginx:latest"
           imagePullPolicy: IfNotPresent
           ports:
             - name: http
