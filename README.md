@@ -1,6 +1,6 @@
 # docker-wkd
 
-A GNUPG WKD (Web Key Directory) generating docker image.
+A OpenPGP WKD (Web Key Directory) generating docker image.
 
 ## Usage
 
@@ -67,7 +67,7 @@ The example below is using nginx-ingress-controller. This is binding /.well-know
 ```
 # ingess.yaml
 
-apiVersion: extensions/v1beta1
+apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
 metadata:
   name: mywebsite
