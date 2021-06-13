@@ -9,7 +9,7 @@ resources:
   - rolebinding.yaml
 images:
   - name: drgrove/wkd
-    newTag: v2.1.0
+    newTag: v2.2.0
   - name: nginx
     newTag: 1.21.0
   - name: kiwigrid/k8s-sidecar
