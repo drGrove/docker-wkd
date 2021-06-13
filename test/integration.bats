@@ -6,19 +6,43 @@ setup() {
 }
 
 teardown() {
-  [ -d "$PWD/test/output" ] && echo "Removing test output folder, this requires sudo" && sudo rm -rf $PWD/test/output
+  [ -d "$PWD/test/output" ] && echo "Removing test output folder, this requires sudo" && sudo rm -rf $PWD/test/output && mkdir -p $PWD/test/output
 }
 
-@test "hu folder generates with expected file using keys file" {
-  run docker run -v $PWD/test/data/file:/data/ -v $PWD/test/output/:/home/user/output/ drgrove/wkd:$VERSION -m drgrovellc.com
+@test "hu folder generates with expected file using keys file in advanced mode" {
+  run docker run -v $PWD/test/data/file:/data/ -v $PWD/test/output/:/home/user/output/ drgrove/wkd:$VERSION -m drgrovellc.com --advanced
   [ "$status" -eq 0 ]
   [ -f "$PWD/test/output/.well-known/openpgpkey/drgrovellc.com/hu/57f91moszq5u15no4a59pp7pujgeaj4c" ]
 }
 
-@test "hu folder generates with expected file using keys folder" {
-  run docker run -v $PWD/test/data/folder:/data/ -v $PWD/test/output/:/home/user/output/ drgrove/wkd:$VERSION --use-folder /data/ -m drgrovellc.com
+@test "hu folder generates with expected file using keys file in direct mode" {
+  run docker run -v $PWD/test/data/file:/data/ -v $PWD/test/output/:/home/user/output/ drgrove/wkd:$VERSION -m drgrovellc.com --direct
+  [ "$status" -eq 0 ]
+  [ -f "$PWD/test/output/.well-known/openpgpkey/hu/57f91moszq5u15no4a59pp7pujgeaj4c" ]
+}
+
+@test "hu folder generates with expected file using keys folder in advanced mode" {
+  run docker run -v $PWD/test/data/folder:/data/ -v $PWD/test/output/:/home/user/output/ drgrove/wkd:$VERSION --use-folder /data/ -m drgrovellc.com --advanced
   [ "$status" -eq 0 ]
   [ -f "$PWD/test/output/.well-known/openpgpkey/drgrovellc.com/hu/57f91moszq5u15no4a59pp7pujgeaj4c" ]
+}
+
+@test "hu folder generates with expected file using keys folder in direct mode" {
+  run docker run -v $PWD/test/data/folder:/data/ -v $PWD/test/output/:/home/user/output/ drgrove/wkd:$VERSION --use-folder /data/ -m drgrovellc.com --direct
+  [ "$status" -eq 0 ]
+  [ -f "$PWD/test/output/.well-known/openpgpkey/hu/57f91moszq5u15no4a59pp7pujgeaj4c" ]
+}
+
+@test "policy file is generated in advanced mode" {
+  run docker run -v $PWD/test/data/folder:/data/ -v $PWD/test/output/:/home/user/output/ drgrove/wkd:$VERSION --folder /data/ -m drgrovellc.com --advanced
+  [ "$status" -eq 0 ]
+  [ -f "$PWD/test/output/.well-known/openpgpkey/drgrovellc.com/policy" ]
+}
+
+@test "policy file is generated in direct mode" {
+  run docker run -v $PWD/test/data/folder:/data/ -v $PWD/test/output/:/home/user/output/ drgrove/wkd:$VERSION --folder /data/ -m drgrovellc.com --direct
+  [ "$status" -eq 0 ]
+  [ -f "$PWD/test/output/.well-known/openpgpkey/policy" ]
 }
 
 @test "A user can only use either a file or a folder, but not both" {

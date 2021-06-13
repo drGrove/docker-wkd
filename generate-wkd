@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -eou
+
 DATA_FILE_PATH=${DATA_FILE_PATH:=/data/keys.txt}
 OUTPUT_FOLDER=${OUTPUT_FOLDER:=output}
 MAIL_DOMAIN=${MAIL_DOMAIN:=""}
@@ -10,6 +12,8 @@ SKIP_UPDATE_KEYRING=${SKIP_UPDATE_KEYRING:=false}
 KEYRING_FILE=${KEYRING_FILE:=/tmp/keyring}
 use_folder_flag=false
 use_file_flag=false
+use_direct=true
+use_advanced=false
 
 PARAMS=""
 
@@ -20,6 +24,8 @@ where:
   -m --mail-domain text - The domain to generate the HU files for
   [--use-folder|--folder] path - The folder that contians users public keys for seeding the trust database
   [--use-file|--file] path (Default: /data/keys.txt) - A file that contains the fingerprints separated by new lines of users public keys to pull from the default keyserver to see the trust database
+  [--direct] - Use the direct WKD setup (Default)
+  [--advanced] - Use the advanced WKD setup
 
 By default --use-file is used with the default path
 "
@@ -75,6 +81,16 @@ while [ "$#" -gt 0 ]; do
       use_file_flag=true
       shift 2
       ;;
+    --direct)
+      use_direct=true
+      use_advanced=false
+      shift
+      ;;
+    --advanced)
+      use_direct=false
+      use_advanced=true
+      shift
+      ;;
     -*|--*) # unsupported flags
       echo "Error: Unsupported flag $1" >&2
       exit 1
@@ -89,6 +105,12 @@ done
 
 if [ "$use_file_flag" = true ] && [ "$use_folder_flag" = true ]; then
   echo "You may only seed with either a file or a folder. Please select 1 of these options and try again" >&2
+
+  exit 1
+fi
+
+if [ "$use_direct" = true ] && [ "$use_advanced" = true ]; then
+  echo "You may only use direct or advanced mode, but not both" >&2
 
   exit 1
 fi
@@ -113,3 +135,8 @@ sq \
   "${OUTPUT_FOLDER}" \
   "${MAIL_DOMAIN}" \
   "/tmp/keyring"
+
+if [ "$use_direct" = true ]; then
+  mv ${OUTPUT_FOLDER}/.well-known/openpgpkey/${MAIL_DOMAIN}/* ${OUTPUT_FOLDER}/.well-known/openpgpkey/
+  rm -r ${OUTPUT_FOLDER}/.well-known/openpgpkey/${MAIL_DOMAIN}
+fi
