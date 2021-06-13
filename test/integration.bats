@@ -36,8 +36,3 @@ teardown() {
   run docker run -v $PWD/test/data/file:/data/ -v $PWD/test/hu:/root/hu/ drgrove/wkd:$VERSION
   [ "$status" -eq 1 ]
 }
-
-@test "Updating a keyring can be skipped" {
-  run docker run -v $PWD/test/data/file:/data/ -v $PWD/test/hu:/root/hu/ drgrove/wkd:$VERSION -s -m drgrovellc.com
-  [ "$status" -eq 0 ]
-}
