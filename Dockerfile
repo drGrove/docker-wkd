@@ -29,10 +29,11 @@ RUN CARGO_TARGET_DIR=target cargo build -p sequoia-sq --release && \
 
 FROM debian@sha256:2cc2cda22c14cf9a40dad00509be66aaeab4756c3f6452dadcf27ac01e16ad68 as main
 
-RUN apt update && apt install -y gnupg
+RUN apt update && apt install -y gnupg inotify-tools
 
-ADD generate-wkd /usr/local/bin/generate-wkd
 COPY --from=builder /opt/usr/local/bin/sq /usr/local/bin/sq
+ADD generate-wkd /usr/local/bin/generate-wkd
+ADD wkd-sync /usr/local/bin/wkd-sync
 
 RUN adduser --disabled-password --uid 1000 user
 

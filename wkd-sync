@@ -1,0 +1,42 @@
+#!/bin/bash
+
+set -eu
+
+usage="$(basename "$0") -- Watch for file changes and run 'generate-wkd'
+
+All flags passed to this command will fall through to 'generate-wkd'. For
+details run:
+
+'generate-wkd --help'
+"
+
+PARAMS=""
+PASSTHROUGH="$@"
+
+while [ "$#" -gt 0 ]; do
+  case "$1" in
+    -h|--help)
+      echo "$usage"
+      exit 0
+      ;;
+    --use-folder|--folder)
+      WATCH_PATH=${2:=/data/}
+      shift 2
+      ;;
+    --use-file|--file)
+      WATCH_PATH=${2:=/data/keys.txt}
+      shift 2
+      ;;
+    *) # preserve positional arguments
+      PARAMS="$PARAMS $1"
+      shift
+      ;;
+  esac
+done
+
+echo "Listening for events on ${WATCH_PATH}"
+
+inotifywait -qme close_write,delete ${WATCH_PATH} |
+  while read -r filename event; do
+    generate-wkd ${PASSTHROUGH}
+  done

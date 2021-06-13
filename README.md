@@ -35,5 +35,72 @@ docker run --rm \
 You can use the kustomization provided as a base, but you will need to add a
 few overrides.
 
-1. You'll need to create a configmap for the keys or file
-2. You'll need to patch your main website ingress to link to the wkd container on path `.well-known/openpgpkey/hu/`
+## Adding a Key
+
+To add a key to WKD you simpely create a configmap for that key with the label `wkd: enroll`. The example below with use a configMapGenerator
+
+```
+# kustomization.yaml
+...
+configMapGenerator:
+  - name: mykey
+    options:
+      labels:
+        wkd: 'enroll'
+      files:
+      - pgp/mykey.asc
+```
+
+Assumed folder structure of above example:
+
+```
+kustomize
+|- kustomization.yaml
+|- pgp/
+   |- mykey.asc
+```
+
+## Patching your ingress
+
+The example below is using nginx-ingress-controller. This is binding /.well-known/openpgp to the `wkd` service.
+
+```
+# ingess.yaml
+
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: mywebsite
+  labels:
+    app.kubernetes.io/name: mywebsite
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt
+    kubernetes.io/ingress.class: nginx
+spec:
+  tls:
+    - hosts:
+      - mywebsite.com
+      secretName: mywebsite-tls
+  rules:
+    - host: mywebsite.com
+      http:
+        paths:
+          - path: /.well-known/openpgpkey/
+            backend:
+              serviceName: wkd
+              servicePort: 80
+```
+
+## Cluster Install
+
+If you'd like to be able in aggregate PGP keys that have been installed in other namespaces you can do so by adding cluster-rbac to your install
+
+```
+# kustomization.yaml
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: wkd
+resources:
+  - github.com/drGrove/docker-wkd/kustomize/direct
+  - github.com/drGrove/docker-wkd/kustomize/cluster-rbac
+```

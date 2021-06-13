@@ -4,11 +4,16 @@ resources:
   - deployment.yaml
   - service.yaml
   - nginx.cm.yaml
+  - service-account.yaml
+  - role.yaml
+  - rolebinding.yaml
 images:
   - name: drgrove/wkd
     newTag: v2.1.0
   - name: nginx
     newTag: 1.21.0
+  - name: kiwigrid/k8s-sidecar
+    newTag: 1.12.0
 configMapGenerator:
   - name: keys
     files: []

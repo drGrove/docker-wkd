@@ -14,7 +14,20 @@ spec:
       labels:
         app: wkd
     spec:
-      initContainers:
+      serviceAccountName: wkd
+      containers:
+        - name: watcher
+          image: "kiwigrid/k8s-sidecar:latest"
+          env:
+            - name: LABEL
+              value: wkd
+            - name: LABEL_VALUE
+              value: 'enroll'
+            - name: FOLDER
+              value: /tmp/keys
+          volumeMounts:
+            - name: keys
+              mountPath: /tmp/keys/
         - name: generator
           image: "drgrove/wkd:latest"
           env:
@@ -25,10 +38,11 @@ spec:
               mountPath: /data/keys/
             - name: wkd
               mountPath: /data/output/
+          command:
+            - /usr/local/bin/wkd-sync
           args:
             - "--use-folder"
             - "/data/keys/"
-      containers:
         - name: nginx
           image: "nginx:latest"
           imagePullPolicy: IfNotPresent
@@ -45,8 +59,7 @@ spec:
       - name: wkd
         emptyDir: {}
       - name: keys
-        configMap:
-          name: keys
+        emptyDir: {}
       - name: nginx
         configMap:
           name: nginx
