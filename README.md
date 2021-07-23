@@ -70,12 +70,11 @@ The example below is using nginx-ingress-controller. This is binding /.well-know
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: mywebsite
+  name: wkd
   labels:
-    app.kubernetes.io/name: mywebsite
+    app.kubernetes.io/name: wkd
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt
-    kubernetes.io/ingress.class: nginx
 spec:
   tls:
     - hosts:
@@ -85,11 +84,13 @@ spec:
     - host: mywebsite.com
       http:
         paths:
-          - path: /.well-known/openpgpkey/
-            backend:
-              service:
-                name: wkd
-                port: 80
+        - path: /.well-known/openpgpkey/
+          pathType: Prefix
+          backend:
+            service:
+              name: wkd
+              port:
+                number: 80
 ```
 
 ### Cluster Install

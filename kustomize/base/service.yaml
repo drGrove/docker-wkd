@@ -3,11 +3,11 @@ kind: Service
 metadata:
   name: wkd
   labels:
-    app: wkd
+    app.kubernetes.io/name: wkd
 spec:
   ports:
   - port: 80
     targetPort: 80
     name: http
   selector:
-    app: wkd
+    app.kubernetes.io/name: wkd

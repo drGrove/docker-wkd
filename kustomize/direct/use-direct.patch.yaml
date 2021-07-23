@@ -2,8 +2,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: wkd
-  labels:
-    app: wkd
 spec:
   template:
     spec:
