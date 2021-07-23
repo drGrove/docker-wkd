@@ -30,16 +30,16 @@ docker run --rm \
   drgrove/wkd
 ```
 
-# Deploying in Kubernetes
+## Deploying in Kubernetes
 
 You can use the kustomization provided as a base, but you will need to add a
 few overrides.
 
-## Adding a Key
+### Adding a Key
 
 To add a key to WKD you simpely create a configmap for that key with the label `wkd: enroll`. The example below with use a configMapGenerator
 
-```
+```yaml
 # kustomization.yaml
 ...
 configMapGenerator:
@@ -53,18 +53,18 @@ configMapGenerator:
 
 Assumed folder structure of above example:
 
-```
+```yaml
 kustomize
 |- kustomization.yaml
 |- pgp/
    |- mykey.asc
 ```
 
-## Patching your ingress
+### Patching your ingress
 
 The example below is using nginx-ingress-controller. This is binding /.well-known/openpgp to the `wkd` service.
 
-```
+```yaml
 # ingess.yaml
 
 apiVersion: networking.k8s.io/v1
@@ -92,11 +92,11 @@ spec:
                 port: 80
 ```
 
-## Cluster Install
+### Cluster Install
 
 If you'd like to be able in aggregate PGP keys that have been installed in other namespaces you can do so by adding cluster-rbac to your install
 
-```
+```yaml
 # kustomization.yaml
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
