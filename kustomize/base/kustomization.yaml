@@ -3,10 +3,13 @@ kind: Kustomization
 resources:
   - deployment.yaml
   - service.yaml
-  - nginx.cm.yaml
   - service-account.yaml
   - role.yaml
   - rolebinding.yaml
+configMapGenerator:
+  - name: nginx
+    files:
+      - default.conf
 images:
   - name: drgrove/wkd
     newTag: v2.2.0
