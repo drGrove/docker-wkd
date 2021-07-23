@@ -3,16 +3,16 @@ kind: Deployment
 metadata:
   name: wkd
   labels:
-    app: wkd
+    app.kubernetes.io/name: wkd
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: wkd
+      app.kubernetes.io/name: wkd
   template:
     metadata:
       labels:
-        app: wkd
+        app.kubernetes.io/name: wkd
     spec:
       serviceAccountName: wkd
       containers:

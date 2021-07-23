@@ -1,16 +1,15 @@
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
+  name: wkd
   labels:
     app.kubernetes.io/name: wkd
-    app.kubernetes.io/part-of: wkd
-  name: wkd
 rules:
-  - apiGroups:
-    - ""
-    resources:
-      - configmaps
-    verbs:
-      - get
-      - list
-      - watch
+- apiGroups:
+  - ""
+  resources:
+  - configmaps
+  verbs:
+  - get
+  - list
+  - watch

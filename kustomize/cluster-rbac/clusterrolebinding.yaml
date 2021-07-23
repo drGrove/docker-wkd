@@ -1,9 +1,9 @@
-kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
 metadata:
-    app.kubernetes.io/name: wkd
-    app.kubernetes.io/part-of: wkd
   name: wkd
+  labels:
+    app.kubernetes.io/name: wkd
 roleRef:
   kind: ClusterRole
   name: wkd
