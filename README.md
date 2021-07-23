@@ -67,7 +67,7 @@ The example below is using nginx-ingress-controller. This is binding /.well-know
 ```
 # ingess.yaml
 
-apiVersion: networking.k8s.io/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: mywebsite
@@ -87,8 +87,9 @@ spec:
         paths:
           - path: /.well-known/openpgpkey/
             backend:
-              serviceName: wkd
-              servicePort: 80
+              service:
+                name: wkd
+                port: 80
 ```
 
 ## Cluster Install
