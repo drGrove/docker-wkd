@@ -3,4 +3,4 @@ kind: Kustomization
 resources:
   - ../base/
 patches:
-  - use-advanced.patch.yaml
+  - path: use-advanced.patch.yaml
