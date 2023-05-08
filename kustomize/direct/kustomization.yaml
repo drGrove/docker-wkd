@@ -4,4 +4,4 @@ resources:
   - ../base/
 
 patches:
-  - use-direct.patch.yaml
+  - path: use-direct.patch.yaml
