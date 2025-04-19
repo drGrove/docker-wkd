@@ -16,7 +16,7 @@ RUN \
   make && \
   make DESTDIR=/rootfs/ install
 
-FROM stagex/pallet-rust as build-wkd-exporter
+FROM stagex/pallet-rust AS build-wkd-exporter
 ADD \ 
   --checksum=sha256:378df2effa432d326ad31a81ad8c750de13cc03da379e56c710377651da985f9 \
   https://github.com/wiktor-k/wkd-exporter/archive/refs/tags/v0.2.2.tar.gz \
@@ -33,7 +33,7 @@ RUN \
   install -vDm 644 README.md -t "/rootfs/usr/share/doc/wkd-exporter/" && \
   install -vDm 644 LICENSE* -t "/rootfs/usr/share/licenses/wkd-exporter/"
 
-FROM stagex/core-filesystem as package
+FROM stagex/core-filesystem AS package
 COPY --from=stagex/core-bash  . /
 COPY --from=stagex/core-busybox . /
 COPY --from=stagex/core-gcc . /
